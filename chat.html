@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Example</title>
+    <style>
+        /* Add your custom CSS styles for the chatbot interface here */
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="Type your message here" />
+        <button id="submit-btn">Send</button>
+    </div>
+
+    <script>
+        // Define the chatbot object
+        const chatbot = {
+            name: "Chatbot",
+            responses: {
+                "hello": "Hi! How can I help you today?",
+                "problem": "I'm sorry to hear that. Could you please provide more details about the problem?",
+                "thank you": "You're welcome! If you have any more questions, feel free to ask.",
+                "default": "I'm sorry, I didn't understand that. Can you please rephrase?"
+            },
+            generateResponse: function(message) {
+                const lowerCaseMessage = message.toLowerCase();
+                for (const keyword in this.responses) {
+                    if (lowerCaseMessage.includes(keyword)) {
+                        return this.responses[keyword];
+                    }
+                }
+                return this.responses["default"];
+            },
+            appendMessage: function(sender, message) {
+                const chatLog = document.getElementById("chat-log");
+                const messageElement = document.createElement("div");
+                messageElement.className = sender;
+                messageElement.innerText = message;
+                chatLog.appendChild(messageElement);
+            },
+            handleUserInput: function() {
+                const userInput = document.getElementById("user-input");
+                const message = userInput.value.trim();
+
+                if (message !== "") {
+                    this.appendMessage("user", message);
+                    const response = this.generateResponse(message);
+                    this.appendMessage("chatbot", response);
+                    userInput.value = "";
+                }
+            },
+            init: function() {
+                const submitBtn = document.getElementById("submit-btn");
+                submitBtn.addEventListener("click", () => this.handleUserInput());
+
+                const userInput = document.getElementById("user-input");
+                userInput.addEventListener("keydown", event => {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        this.handleUserInput();
+                    }
+                });
+
+                this.appendMessage("chatbot", `Hi, I'm ${this.name}! How can I assist you today?`);
+            }
+        };
+
+        // Initialize the chatbot
+        chatbot.init();
+    </script>
+</body>
+</html>
